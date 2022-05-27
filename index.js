@@ -23,6 +23,35 @@ async function run() {
 
         const reviewCollection = client.db('tradebd').collection('reviews');
 
+        const userCollection = client.db('tradebd').collection('users')
+        const orderCollection = client.db('tradebd').collection('order')
+
+        // const userCollection=client.db('tradebd')=client.db('tradebd').collection('admin')
+
+        // get all user
+        app.get('/user', async (req, res) => {
+            const users = await userCollection.find().toArray();
+            res.send(users);
+        });
+
+        // get order by user
+        app.get('/order', async (req, res) => {
+
+            const email = req.query.email;
+
+            const query = { email: email };
+            const cursor = orderCollection.find(query);
+            const orders = await cursor.toArray();
+            res.send(orders);
+
+        })
+
+        app.post('/order', async (req, res) => {
+            const order = req.body;
+            const result = await orderCollection.insertOne(order);
+            res.send(result);
+        })
+
         // get all product
         app.get('/product', async (req, res) => {
             const query = {};
