@@ -39,6 +39,13 @@ async function run() {
             res.send(product);
         })
 
+        // add a product by admin
+        app.post('/product', async (req, res) => {
+            const newproduct = req.body;
+            const result = await productCollection.insertOne(newproduct);
+            res.send(result);
+        })
+
         // get all review
         app.get('/review', async (req, res) => {
             const query = {};
@@ -53,6 +60,7 @@ async function run() {
             const result = await reviewCollection.insertOne(newReview);
             res.send(result);
         })
+
 
     }
     finally {
