@@ -21,6 +21,8 @@ async function run() {
         await client.connect();
         const productCollection = client.db('tradebd').collection('products');
 
+        const reviewCollection = client.db('tradebd').collection('reviews');
+
         // get all product
         app.get('/product', async (req, res) => {
             const query = {};
@@ -36,6 +38,22 @@ async function run() {
             const product = await productCollection.findOne(query);
             res.send(product);
         })
+
+        // get all review
+        app.get('/review', async (req, res) => {
+            const query = {};
+            const cursor = reviewCollection.find(query);
+            const reviews = await cursor.toArray();
+            res.send(reviews)
+        })
+
+        // Add review
+        app.post('/review', async (req, res) => {
+            const newReview = req.body;
+            const result = await reviewCollection.insertOne(newReview);
+            res.send(result);
+        })
+
     }
     finally {
 
