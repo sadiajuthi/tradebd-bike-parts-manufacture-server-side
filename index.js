@@ -23,18 +23,55 @@ async function run() {
 
         const reviewCollection = client.db('tradebd').collection('reviews');
 
-        const userCollection = client.db('tradebd').collection('users')
-        const orderCollection = client.db('tradebd').collection('order')
+        const userCollection = client.db('tradebd').collection('users');
+        const orderCollection = client.db('tradebd').collection('orders');
+
+        const adminCollection = client.db('tradebd').collection('users')
 
         // const userCollection=client.db('tradebd')=client.db('tradebd').collection('admin')
 
-        // get all user
+        // admin and users
         app.get('/user', async (req, res) => {
             const users = await userCollection.find().toArray();
             res.send(users);
         });
 
+
+
+
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user,
+            };
+            const result = await userCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        })
+
+
+
+
+
+        // get all product
+        app.get('/product', async (req, res) => {
+            const query = {};
+            const cursor = productCollection.find(query);
+            const products = await cursor.toArray();
+            res.send(products)
+        })
+
         // get order by user
+
+
+        app.post('/order', async (req, res) => {
+            const order = req.body;
+            const result = await orderCollection.insertOne(order);
+            res.send(result);
+        })
+
         app.get('/order', async (req, res) => {
 
             const email = req.query.email;
@@ -44,20 +81,6 @@ async function run() {
             const orders = await cursor.toArray();
             res.send(orders);
 
-        })
-
-        app.post('/order', async (req, res) => {
-            const order = req.body;
-            const result = await orderCollection.insertOne(order);
-            res.send(result);
-        })
-
-        // get all product
-        app.get('/product', async (req, res) => {
-            const query = {};
-            const cursor = productCollection.find(query);
-            const products = await cursor.toArray();
-            res.send(products)
         })
 
         // get product by id
