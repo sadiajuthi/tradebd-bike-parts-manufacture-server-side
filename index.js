@@ -67,6 +67,15 @@ async function run() {
             res.send(result);
         })
 
+        // delete user
+        app.delete('/user/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await userCollection.deleteOne(query);
+            res.send(result);
+
+        })
+
 
 
 
@@ -81,22 +90,13 @@ async function run() {
 
         // get order by user
 
-
-        app.post('/order', async (req, res) => {
-            const order = req.body;
-            const result = await orderCollection.insertOne(order);
-            res.send(result);
-        })
-
-        app.get('/order', async (req, res) => {
-
+        app.get('/myorder', async (req, res) => {
             const email = req.query.email;
-
+            console.log(email);
             const query = { email: email };
-            const cursor = orderCollection.find(query);
-            const orders = await cursor.toArray();
-            res.send(orders);
-
+            const cursor = productCollection.find(query);
+            const product = await cursor.toArray();
+            res.send(product)
         })
 
         // get product by id
@@ -105,6 +105,15 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const product = await productCollection.findOne(query);
             res.send(product);
+        })
+
+        // delete product
+        app.delete('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await productCollection.deleteOne(query);
+            res.send(result);
+
         })
 
         // add a product by admin
